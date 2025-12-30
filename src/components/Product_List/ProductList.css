@@ -1,0 +1,12 @@
+.products-list-background{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    width:  100%;
+}
+.products-list-title{
+    padding-left: 15px;
+    font-family: 'Anton', Courier, monospace;
+    font-weight: 300;
+    width: 100%;
+}

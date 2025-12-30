@@ -1,0 +1,39 @@
+.header-background{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    background-color: rgb(20, 43, 68);
+    height: 55px;
+    width: 100%;
+}
+
+.image-logo{
+    margin-left: 5px;
+    height: 47px;
+    width: 49px;
+     cursor: pointer;
+}
+.title-background{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+}
+.title{
+    font-family: 'Rubik Dirt', Courier, monospace;
+    color: white;
+    font-size: 20px;
+     cursor: pointer;
+}
+.shopping-cart-container{
+color: white;
+    margin-right: 1.5em;
+    font-size: 20px;
+    cursor: pointer;
+}
+@media (min-width: 640px) {
+    .title{
+        font-size: 25px;
+    }
+}

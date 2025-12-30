@@ -1,0 +1,49 @@
+.error-background{
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.error-image{
+    margin-top: 10px;
+    width: 50%;
+    height: 60%;
+}
+.title-error{
+    font-weight: 300;
+    font-family: 'Anton', Courier, monospace;
+    width: 80%;
+}
+.label-error{
+    font-family: 'Roboto', Courier, monospace;
+    font-size: 18px;
+    width: 80%;
+    
+}
+.home-button-container{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.home-button{
+    cursor: pointer;
+    font-size: 18px;
+    background-color: rgb(20, 43, 68);
+    color: white;
+    margin-top: 20px;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+}
+@media (min-width: 640px) {
+    .title-error{
+        text-align: center;
+    }
+    .label-error{
+        text-align: center;
+    }
+    .error-image{
+        width: 320px;
+        height: 313px;
+    }
+}

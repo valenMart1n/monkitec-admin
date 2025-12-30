@@ -1,0 +1,74 @@
+.alert-background{
+    
+    display: flex;
+    width: 250px;
+    height: 3em;
+    background-color: rgb(253, 255, 255);
+    margin: 5px;
+    border-radius: 10px;
+    animation: fadeIn 1.6s ease-in-out;
+}
+.text-background{
+    display: flex;
+    align-items: center;
+    
+}
+.icon-background{
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    width: 20px;
+    
+}
+.icon-background.check{
+    background-color: green;
+}
+.icon-background.cross{
+    background-color: red;
+}
+.icon-background.warning{
+    background-color: rgb(255, 238, 0);
+}
+.color-bar{
+    margin-right: 5px;
+   
+    width: 5px;
+    height: 100%;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.color-bar.check{
+    background-color: green;
+}
+.color-bar.cross{
+    background-color: red;
+}
+.color-bar.warning{
+    background-color: rgb(255, 238, 0);
+}
+.alert-text{
+    font-size: 13px;
+    margin-left: 8px;
+}
+
+@media(min-width:1024px){
+    
+    .alert-text{
+        font-size: 14px;
+    }
+}
+@keyframes fadeIn {
+    0%{
+        transform: translateX(-20px);
+    }
+    20%{
+        transform: translateX(0);
+        
+    }
+    80%{
+        transform: translateX(0);
+    }
+    100%{
+        transform: translateX(-200px);
+    }
+}
