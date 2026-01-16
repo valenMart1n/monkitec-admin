@@ -3,7 +3,7 @@ import './ListedProduct.css';
 import { useNavigate } from "react-router-dom";
 import { Icon } from '../../Icon';
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
-function ListedProduct({ product, onClick }) {
+function ListedProduct({ product, onClick, onDelete }) {
     const navigate = useNavigate();
 
     const formattedPrice = new Intl.NumberFormat('es-AR', {
@@ -25,11 +25,34 @@ function ListedProduct({ product, onClick }) {
 
     const hasSecondImage = () => {
     const result = getImage(product.imagen2_optimizada, product.ruta_imagen2);
-        if(result == 0 || result == null){
+        if(result == null){
             return false;
-        }
+        }else{
         return true;
+        }
     };
+
+    const handleDelete = async(e) => {
+        e.stopPropagation();
+        try{
+        await fetch("http://localhost:3030/products/delete", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: product.id })
+        });
+        await fetch("http://localhost:3030/product-variation/deleteByProduct", {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: product.id })
+        })
+           if (onDelete) {
+                onDelete();
+            }
+            
+        }catch(error){
+            alert("Error: " + error);
+        }
+    }
 
     const image1 = getImage(product.imagen_optimizada, product.ruta_imagen);
     const image2 = getImage(product.imagen2_optimizada, product.ruta_imagen2);
@@ -40,7 +63,8 @@ function ListedProduct({ product, onClick }) {
             <div className={`listed-product-image-container ${showHoverEffect ? 'has-hover' : ''}`}>
                 {product.hasImage || product.ruta_imagen || product.imagen_optimizada ? (
                     <>
-                        {/* Imagen principal */}
+                        {/* Imagen principal */
+                        console.log(hasSecondImage())}
                         <img 
                             src={image1} 
                             alt={product.desc}
@@ -51,7 +75,7 @@ function ListedProduct({ product, onClick }) {
                         />
                         
                         {/* Imagen secundaria (solo si hay hover effect) */}
-                        {showHoverEffect && (
+                        {hasSecondImage() && (
                             <img 
                                 src={image2} 
                                 alt={`${product.desc} - vista alterna`}
@@ -72,7 +96,7 @@ function ListedProduct({ product, onClick }) {
             <div className="labels-container">
                 <h3 className="product-name">{product.desc}</h3>
                 <p className="label-price">{formattedPrice}</p>
-                <button className='delete-product-button'><Icon icon={faTrashCan}/></button>
+                <button className='delete-product-button' onClick={handleDelete}><Icon icon={faTrashCan}/></button>
                 <div className={`product-status ${product.disponible ? 'available' : 'sold-out'}`}>
                     {product.stock_total === 0 ? 'Sin stock' : (!product.disponible ? 'Agotado' : '')}
                 </div>

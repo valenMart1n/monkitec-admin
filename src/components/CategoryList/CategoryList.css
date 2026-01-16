@@ -1,0 +1,26 @@
+.category-list-background{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.category-list-title{
+    font-family: 'Anton', Courier, monospace;
+    font-weight: 300;
+    width: 95%;
+}
+.category-listed-background{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 15em;
+    max-width: 450px;
+}
+
+@media (min-width: 640px){
+    .category-listed-background{
+        margin-top: 10px;
+        width: 45%;
+    }
+}

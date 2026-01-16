@@ -68,6 +68,7 @@
     color: rgb(26, 26, 26);
 }
 .delete-product-button{
+    cursor: pointer;
     background-color: red;
     color: white;
     border: none;
@@ -116,9 +117,7 @@
 .available{
     width: 50%;
 }
-.listed-product-image-container{
- 
-}
+
 
 @media (min-width: 640px) {
   

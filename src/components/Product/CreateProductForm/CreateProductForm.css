@@ -1,0 +1,110 @@
+.create-product-form{
+    
+    width: 100%;
+}
+.preview-image-container{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin-left: 15px;
+}
+.preview-container{
+    width: 100%;
+}
+.input-container{
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 15px;
+    padding-top: 20px;
+    width: 100%;
+
+}
+.product-create-title{
+    width: 60%;
+    margin-bottom: 15px;
+    max-width: 232px;
+}
+
+.product-create-price{
+    max-width: 177px;
+}
+
+.options-create-section{
+    width: 100%;
+}
+.preview{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.create-product-variations{
+    margin-bottom: 15px;
+}
+
+.product-stock-label{
+    padding-left: 15px;
+}
+
+.create-form-new-quantity-input{
+
+    width: 8em;
+}
+
+.add-variation-button{
+    font-family: 'Roboto', Courier, monospace;
+    margin-left: 10px;
+    border:none;
+    cursor: pointer;
+    font-weight: bolder;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(35, 145, 68);
+    color: white;
+
+}
+
+
+.create-form-variations-list{
+    width: 80%;    
+    padding: 0;
+}
+
+.create-form-variations-item{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.create-form-row-title{
+    width: 30%;
+    margin-right: 10px;
+}
+
+.create-form-row-buttons{
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.product-create-send{
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 15px;
+    border: none;
+    background-color: rgb(20, 43, 68);
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: all ease-in-out 150ms;
+}
+
+@media (min-width: 1024px){
+    :hover.add-variation-button{
+        background-color: rgb(53, 214, 101);
+    }
+    :hover.product-create-send{
+        background-color: rgb(41, 87, 136);
+    }
+}
+

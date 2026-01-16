@@ -38,9 +38,11 @@
 @media (min-width: 640px) {
     .title-error{
         text-align: center;
+        width: 100%;
     }
     .label-error{
         text-align: center;
+        width: 100%;
     }
     .error-image{
         width: 320px;

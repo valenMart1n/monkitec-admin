@@ -10,3 +10,25 @@
     font-weight: 300;
     width: 100%;
 }
+.add-product-button{
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    padding: 7px;
+    bottom: 20px;
+    right: 20px;
+    position: fixed;
+    z-index: 2;
+    background-color: rgb(35, 145, 68);
+    color: white;
+    font-size: 20px;   
+    transition: all ease 250ms;
+}
+:hover.add-product-button{
+    background-color: rgb(53, 214, 101);
+}
+@media (min-width: 1024px) {
+    .add-product-button{
+        padding: 10px;
+    }
+}
