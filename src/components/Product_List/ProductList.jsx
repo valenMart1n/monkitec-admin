@@ -57,7 +57,7 @@ function ProductList(){
     };
     
     const getProductDetail = (product) => {
-        console.log("Detalle: "+product.category.desc)
+       
         navigate(`/product/${product.id}`, {
             state: {  product: {
                 id: product.id,

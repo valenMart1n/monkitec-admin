@@ -19,13 +19,18 @@ function Product() {
     const [stocks, setStocks] = useState([]);
     const [availableVariations, setAvailableVariations] = useState([]);
     const [newVariantStock, setNewVariantStock] = useState(0);
-
+    const [oldVariations, setOldVariations] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState([]);
     const [productState, setProductState] = useState({
+        id: 0,
         desc: "",
         precio: 0,
-        imagen1: "",
-        imagen2: "",
-        stock_total: 0
+        imagen:"",
+        imagen2:"",
+        stock_total: 0,
+        category: "",
+        variations: []
     });
 
     const incrementTotal = () => {
@@ -51,18 +56,6 @@ function Product() {
     };
 
     useEffect(() => {
-        if (product) {
-            setProductState({
-                desc: product.desc || "",
-                precio: product.precio || 0,
-                imagen1: product?.ruta_imagen || "",
-                imagen2: product.ruta_imagen2 || "",
-                stock_total: product.stock_total || 0
-            });
-        }
-    }, [product]); 
-
-    useEffect(() => {
         const fetchAvailableVariations = async () => {
             try{
                 const response = await fetch("http://localhost:3030/variations", {
@@ -78,23 +71,46 @@ function Product() {
                 }
 
                 const allVariations = await response.json();
-                console.log("Producto inexistente: ", product);
-                if(!product){
+              
+                if(!productState.variations){
                     console.log("Fueron seteadas: ", allVariations);
-                    setAvailableVariations(allVariations);
-                }else{
-                const available = allVariations.filter(variation => {
-                    return !product.variations?.some(pv => pv.id === variation.id);
+                    setAvailableVariations(allVariations.map(variation => {
+                        return {
+                            id: variation.Product_Variation.id,
+                            desc: variation.descripcion
+                        }
+                    }));
+                }
+                if(productState.variations){
+                    
+                    const available = allVariations.filter(variation => {
+                        return !productState.variations.some(pv => pv.variation_id === variation.id);
+                    });
+                    setAvailableVariations(available);
+                }
+                 const responseCategories = await fetch("http://localhost:3030/categories/listAll", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
                 });
 
-                setAvailableVariations(available);
-            }
+                if(!responseCategories.ok){
+                    throw new Error(`Error: ${responseCategories.status}`);
+                }
+
+                const allCategories = await responseCategories.json();
+                const availableCategories = allCategories.data.filter((category) => {
+                    return category.id != productState.category.id;
+                })
+                setCategories(availableCategories);
             }catch(error){
                 console.log(error);
             }
         }
         fetchAvailableVariations();
-    },[product?.id, product?.variations]);
+    },[productState?.variations]);
 
     const handleImageChange = (e, imageField) => {
         console.log("Image change ejecutado");
@@ -130,84 +146,69 @@ function Product() {
     };
     
     const handleCreate = async()=>{
-
-    }
-
-    const handleDelete = async(productVariationId) => {
         try{
-            await fetch("http://localhost:3030/product-variation/delete", {
+            const formData = new FormData();
+            formData.append("desc", productState.desc);
+            formData.append("precio", productState.precio);
+            formData.append("category_id", selectedCategory.id);
+            formData.append("stock_total", productState.stock_total);
+            
+            if(productState.imagenFile){
+                formData.append("imagen", productState.imagenFile);
+            }
+            if(productState.imagen2File){
+                formData.append("imagen2", productState.imagen2File);
+            }
+
+            const productResponse = await fetch("http://localhost:3030/products/create", {
                 method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: productVariationId })
-            }).then(async res => {
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    console.error(`Error al borrar variante ${productVariationId}:`, errorText);
-                    throw new Error(`Variante ${productVariationId}: ${res.status}`);
+                body: formData
+            });
+
+            const productData = await productResponse.json();
+
+            const addVariations = productState.variations.map(variation => {
+                try{
+                    fetch("http://localhost:3030/product-variation/create", {
+                        method:"POST",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id_producto: productData.data,
+                            id_variacion: variation.variation_id,
+                            stock: variation.stock
+                        })
+                    }).then(async res => {
+                        if(!res.ok){
+                            const errorText = await res.text();
+                            console.error(`Error al agregar variante ${variation.variation_id}:`, errorText);
+                            throw new Error(`Variante ${variation.variation_id}: ${res.status}`);
+                        }
+                    });
+                }catch(error){
+                    alert("Error al agregar product-variation: ", error);
                 }
-                
-                const indexToDelete = product?.variations.findIndex(v => 
-                    v.Product_Variation?.id === productVariationId
-                );
-                
-                if (indexToDelete === -1) {
-                    console.error("No se encontró la variante con ID:", productVariationId);
-                    return;
-                }
-                
-                // Guardar la variante que se va a borrar (para agregar a disponibles)
-                const deletedVariation = product?.variations[indexToDelete];
-                
-                // Crear nuevos arrays sin ese elemento
-                const newVariations = product?.variations.filter((_, index) => 
-                    index !== indexToDelete
-                );
-                
-                const newStocks = stocks.filter((_, index) => 
-                    index !== indexToDelete
-                );
-                
-                // Actualizar estados
-                setProduct(prev => ({ ...prev, variations: newVariations }));
-                setStocks(newStocks);
-                
-                // Agregar a variaciones disponibles
-                if (deletedVariation) {
-                    setAvailableVariations(prev => [...prev, deletedVariation]);
-                }
-                
-                alert("Variante borrada");
-                return res.json();
-            }).catch(err => {
-                console.error("Error en fetch:", err);
-                alert("Error en la base de datos: "+ err);
-                return { success: false, id: productVariationId, error: err.message };
-            })
-        }catch(err){
-            console.error("Error en fetch:", err);
-            alert("Error en la base de datos: "+ err);
-            return { success: false, error: err.message };
+            });
+
+            await Promise.all(addVariations);
+            navigate("/products");
+            alert("Producto creado con exito");
+        }catch(error){
+            alert("Error en base de datos: ", error);
         }
     }
 
     const handleUpdate = async() => {
         try{
             const formData = new FormData();
-            formData.append('id', product.id);
+            formData.append('id', productState.id);
             formData.append('desc', productState.desc);
             formData.append('precio', productState.precio);
-            
-            // Calcular stock total
-            if(product?.variations.length === 0){
-                formData.append("stock_total", productState.stock_total || 0);
-            } else {
-                const calculatedTotal = stocks.reduce((sum, stock) => sum + stock, 0);
-                formData.append("stock_total", calculatedTotal);
-            }
+            formData.append("stock_total", productState.stock_total || 0);
+            formData.append("category_id", selectedCategory.id);
             
             // Agregar imágenes si hay archivos nuevos
-            if (productState.imagen1File) {
-                formData.append('imagen', productState.imagen1File);
+            if (productState.imagenFile) {
+                formData.append('imagen', productState.imagenFile);
             }
             if (productState.imagen2File) {
                 formData.append('imagen2', productState.imagen2File);
@@ -223,28 +224,30 @@ function Product() {
                 throw new Error(`Error producto: ${productResponse.status}`);
             }
 
-            // Actualizar stocks de variaciones existentes
-            const stockUpdates = product?.variations.map((variation, index) => ({
-                id: variation.Product_Variation?.id || variation.id,
-                stock: stocks[index] || 0
-            }));
-
-            console.log("Enviando stocks:", stockUpdates);
-
-            const updatePromises = stockUpdates.map(update => 
+            const updatedVariations = productState.variations.filter(newVariation => {
+                return oldVariations?.some(oldVariation => 
+                   oldVariation.variation_id ==  newVariation.variation_id
+                );
+            });            
+            console.log("PREPARADOS PARA ACTUALIZAR: ", updatedVariations);
+            const updatePromises = updatedVariations.map(update => 
                 fetch('http://localhost:3030/product-variation/update', {
                     method: 'POST',
                     headers: {  
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(update)
+                    body: JSON.stringify({
+                        id: update.id,
+                        stock: update.stock
+                    })
                 }).then(async res => {
                     if (!res.ok) {
                         const errorText = await res.text();
-                        console.error(`Error variante ${update.id}:`, errorText);
+                        console.error(`Error variante ${update.id} con stock: ${update.stock}:`, errorText);
                         throw new Error(`Variante ${update.id}: ${res.status}`);
                     }
                     return res.json();
+                    
                 }).catch(err => {
                     console.error("Error en fetch:", err);
                     alert("Error en la base de datos: "+ err);
@@ -252,33 +255,59 @@ function Product() {
                 })
             );
 
-            // Agregar nueva variación si se seleccionó
-            if(selectedVariant != null && newVariantStock > 0){
-                await fetch("http://localhost:3030/product-variation/create", {
-                    method: "POST",
-                    headers: {  
-                        'Content-Type': 'application/json'
-                    }, 
-                    body: JSON.stringify({
-                        id_producto: product.id,
-                        id_variacion: selectedVariant.id,
-                        stock: newVariantStock
-                    })
-                }).then(async res => {
-                    if(!res.ok){
-                        const errorText = await res.text();
-                        console.error("Error variante", errorText);
-                        throw new Error(`Variante ${res.status}`);
-                    }
-                    return res.json();
-                }).catch(err => {
-                    console.error("Error en fetch:", err);
-                    alert("Error en la base de datos: "+ err);
-                    return { success: false, error: err.message };
-                });
-            }
+            const deletedVariations = oldVariations.filter(oldVariation => {
+                return !productState.variations?.some(newVariation => 
+                    newVariation.variation_id == oldVariation.variation_id 
+                );
+            });
+            const deleteVariations = deletedVariations.map(variation => {
+                try{
+                    fetch("http://localhost:3030/product-variation/delete", {
+                        method: "POST",
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: variation.id})
+                    }).then(async res => {
+                        if (!res.ok) {
+                            const errorText = await res.text();
+                            console.error(`Error al borrar variante ${variation.id}:`, errorText);
+                            throw new Error(`Variante ${variation.id}: ${res.status}`);
+                    }});
+                }catch(error){
+                    alert("Error al eliminar product-variation: ", error);
+                }
+            })
+
+            const addedVariations = productState.variations.filter(newVariation => {
+                return !oldVariations.some(oldVariation => 
+                    oldVariation.variation_id == newVariation.variation_id
+                );
+            });
+
+            const addVariations = addedVariations.map(variation => {
+                try{
+                    fetch("http://localhost:3030/product-variation/create", {
+                        method:"POST",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id_producto: productState.id,
+                            id_variacion: variation.variation_id,
+                            stock: variation.stock
+                        })
+                    }).then(async res => {
+                        if(!res.ok){
+                            const errorText = await res.text();
+                            console.error(`Error al agregar variante ${variation.variation_id}:`, errorText);
+                            throw new Error(`Variante ${variation.variation_id}: ${res.status}`);
+                        }
+                    });
+                }catch(error){
+                    alert("Error al agregar product-variation: ", error);
+                }
+            });
 
             await Promise.all(updatePromises);
+            await Promise.all(deleteVariations);
+            await Promise.all(addVariations);
             setNewVariantStock(0);
             navigate("/products");
             alert("Producto Actualizado correctamente");
@@ -306,20 +335,97 @@ function Product() {
         setTouchStartX(0);
     };
     
-    const append = (indice) => {
-        setStocks(prevStocks => {
-            const newStocks = [...prevStocks];
-            newStocks[indice] = (newStocks[indice] || 0) + 1;
-            return newStocks;
-        });
+     const append = (id) => {
+        setProductState(prev => ({
+            ...prev,
+            stock_total: prev.stock_total + 1,
+            variations: prev.variations.map(variation => 
+                variation.id == id
+                ? {...variation, stock: variation.stock + 1}
+                : variation
+            )
+        }))    
     }
     
-    const prepend = (indice) => {
-        setStocks(prevStocks => {
-            const newStocks = [...prevStocks];
-            newStocks[indice] = Math.max(0, (newStocks[indice] || 0) - 1);
-            return newStocks;
-        });
+    const prepend = (id) => {
+    
+    setProductState(prev => ({
+        ...prev,
+        stock_total: prev.stock_total - 1,
+        variations: prev.variations.map(variation => 
+            variation.id === id && variation.stock > 0
+                ? { ...variation, stock: variation.stock - 1 }
+                : variation
+        ),
+        }));
+    };
+
+    const handleNewVariation = () => {
+        if(selectedVariant != null && newVariantStock > -1){
+            console.log("ID DE LA VARIANTE ELEGIDA: ", selectedVariant.id);
+            const existedBefore = oldVariations.find(old => 
+                old.variation_id === selectedVariant.id
+                
+            );
+        console.log("RESULTADO DEL EXISTED: ",existedBefore);
+        if (existedBefore) {
+        
+            setProductState(prev => {
+                const currentVariations = prev.variations || [];
+                return {
+                    ...prev,
+                variations: [
+                    ...currentVariations,  
+                    {
+                        id: existedBefore.id,
+                        variation_id: selectedVariant.id,
+                        desc: selectedVariant.descripcion,
+                        stock: newVariantStock
+                    }
+                ]}
+            });
+        }else{
+             setProductState(prev => {
+                const currentVariations = prev.variations || [];
+                return {
+                    ...prev,
+                variations: [
+                    ...currentVariations,  
+                    {
+                        variation_id: selectedVariant.id,
+                        desc: selectedVariant.descripcion,
+                        stock: newVariantStock
+                    }
+                ]}
+            });
+        }
+            setSelectedVariant(null);
+            setNewVariantStock(0);
+            console.log("variante agregada: " + selectedVariant.id, " su stock es: "+ newVariantStock);
+            
+        }
+    }
+
+    const handleDeleteVariation = (variationId) => {
+        const indexToDelete  = productState.variations.findIndex(v => 
+            v.id === variationId
+        );
+        
+        const deletedVariation = productState.variations[indexToDelete];
+
+        const newVariations = productState.variations.filter((_, index) => 
+            index != indexToDelete
+        );
+
+        setProductState(prev => ({...prev, variations: newVariations}));
+
+        if(deletedVariation){
+            const restoredVariation = {
+            id: deletedVariation.id,
+            descripcion: deletedVariation.descripcion  
+            };
+            setAvailableVariations(prev => [...prev, restoredVariation]);
+        }
     }
 
     // Función unificada para extraer datos del producto
@@ -353,7 +459,7 @@ function Product() {
             imagen_public_id2: product.imagen_public_id2 || null
         };
     };
-
+    
     // Función para obtener producto desde API
     const fetchProductFromAPI = async (productId) => {
         try {
@@ -403,7 +509,7 @@ function Product() {
                     productData = await fetchProductFromAPI(id);
                 }
                 
-                if (!productData && product) {
+                if (!productData) {
                     throw new Error("PRODUCT_NOT_FOUND");
                 }
                 if(productData){
@@ -411,25 +517,30 @@ function Product() {
                 const cleanProduct = extractProductData(productData);
                 console.log("Producto limpio:", cleanProduct);
                 setProduct(cleanProduct);
-
-                // Configurar stocks de variaciones
-                if (cleanProduct.variations) {
-                    const initialStocks = cleanProduct?.variations.map(variation => 
-                        variation.stock_info?.stock || 
-                        variation.Product_Variation?.stock || 
-                        0
-                    );
-                    console.log("Stocks iniciales:", initialStocks);
-                    setStocks(initialStocks);
-                }
                 
-                // Configurar productState
+                const productStateVariations = cleanProduct.variations?.map((variation) => {
+                return {
+                    id: variation.Product_Variation.id,
+                    desc: variation.descripcion || variation.desc, // Usa descripcion o desc
+                    stock: variation.Product_Variation?.stock ||  
+                           variation.stock || 
+                           0,
+                    variation_id: variation.id
+                    };
+                }) || [];
+
+                setOldVariations(productStateVariations);
+         
                 setProductState({
+                    id: cleanProduct.id,
                     desc: cleanProduct.desc || "",
                     precio: cleanProduct.precio || 0,
-                    imagen1: cleanProduct.ruta_imagen || "",
-                    imagen2: cleanProduct.ruta_imagen2 || "",
-                    stock_total: cleanProduct.stock_total || 0
+                    ruta_imagen: cleanProduct.ruta_imagen || "",
+                    imagen: getImage(cleanProduct.imagen_optimizada, cleanProduct.ruta_imagen)||"",
+                    imagen2: getImage(cleanProduct.imagen2_optimizada, cleanProduct.ruta_imagen2)||"",
+                    stock_total: cleanProduct.stock_total || 0,
+                    category: cleanProduct.category,
+                    variations: productStateVariations
                 });
             
             }
@@ -485,7 +596,7 @@ function Product() {
     };
 
     const hasSecondImage = () => {
-        const result = getImage(product?.imagen2_optimizada, product?.ruta_imagen2);
+        const result = productState.imagen2;
         console.log("Resultado segunda imagen:", result);
         if(result === 0 || result == null){
             return false;
@@ -498,15 +609,9 @@ function Product() {
         return <div className="loading">Cargando producto...</div>;
     }
     
-    
-    const variations = product?.variations || [];
     const categoryName = product?.category?.desc || "";
-    const image1 = productState.imagen1 || getImage(product?.imagen_optimizada, product?.ruta_imagen);
-    const image2 = productState.imagen2 || getImage(product?.imagen2_optimizada, product?.ruta_imagen2);
-    
-    const showTotal = variations.length === 0 
-        ? (productState.stock_total || 0) 
-        : stocks.reduce((sum, stock) => sum + stock, 0);
+    const image1 = productState.imagen;
+    const image2 = productState.imagen2;
     
     return (
         <div className="product-detail-background">
@@ -516,7 +621,7 @@ function Product() {
                 )}
                 
                 <div className={`product-image-container ${hasSecondImage() ? 'has-hover' : ''}`}>
-                    {productState.imagen1File || product.hasImage ? (
+                    {image1 ? (
                         <>
                             <img 
                                 src={image1} 
@@ -553,11 +658,11 @@ function Product() {
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={(e) => handleImageChange(e, 'imagen1')}
+                            onChange={(e) => handleImageChange(e, 'imagen')}
                         />
-                        {(image1 || productState.imagen1) && (
+                        {(image1 || productState.imagen) && (
                             <img 
-                                src={productState.imagen1} 
+                                src={image1} 
                                 alt="Preview 1" 
                                 style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                             />
@@ -594,14 +699,38 @@ function Product() {
                     value={productState.precio.toLocaleString('es-AR')}
                     onChange={handlePriceChange}
                 />
-                
                 <section className="options-section">
+                    <select className="product-detail-select" onChange={(e) => {
+                        if(e.target.value === ""){
+                            setSelectedVariant(null);
+                        } else {
+                            const selectedIndex = e.target.selectedIndex - 1;
+                            console.log("Categoria seleccionada: ", categories[selectedIndex].desc);
+                            setSelectedCategory(categories[selectedIndex]);
+                        }
+                    }}>
+                        <option value={productState.category?.desc||""}>{productState.category?.desc||"Selecciona una categoría"}</option>
+                        {categories.map((category) => {
+                            return(
+                                <option
+                                    key={category.id}
+                                    value={category.id}
+                                    className="category-option"
+                                >
+                                    {category.desc}
+                                </option>
+                            )
+                        })}
+                    </select>
+                </section>
+                <section className="options-section">
+                    
                     {categoryName.includes("Vapes") ? (
                         <p className="product-variation-title">Agregar sabor:</p>
                     ) : (
                         <p className="product-variation-title">Agregar variación:</p>
                     )}
-                    <select className="variations" onChange={(e) => {
+                    <select className="product-detail-select" onChange={(e) => {
                         console.log("Seleccionado: " + e.target.selectedIndex);
                         if(e.target.value === ""){
                             setSelectedVariant(null);
@@ -614,14 +743,14 @@ function Product() {
                         {categoryName.includes("Vapes") ? (
                             <option value="">Selecciona un sabor</option>
                         ) : (
-                            <option value="">Selecciona un color</option>
+                            <option value="">Selecciona una variacion</option>
                         )}
                         
                         {availableVariations.map((variation, index) => {                               
                             return (
                                 <option 
-                                    key={variation.id||index}
-                                    value={variation.id||index}
+                                    key={variation.id}
+                                    value={variation.id}
                                     className="variation-option"
                                 >
                                     {variation.descripcion}
@@ -657,28 +786,25 @@ function Product() {
                             <Icon icon={faPlus}/>
                         </button>
                     </div>
-                    
+                    <button className="add-variation-button" onClick={handleNewVariation}>AGREGAR</button>
                 </section>
                 
-                {variations.map((variation, index) => {
-                    const stock = variation.stock_info?.stock || variation.Product_Variation?.stock || 0;
-                    const isOutOfStock = stock === 0;
-                    
+                {productState.variations?.map((variation, index) => {
                     return (
                         <li
-                            key={variation.id || index}
-                            value={variation.id || index}
+                            key={variation.id}
+                            value={variation.id}
                             className="product-variation-row"
-                            disabled={isOutOfStock}
                         > 
-                            <p className="row-title">{variation.descripcion}</p>
+                            <p className="row-title">{variation.desc}</p>
+                            {console.log("id: ", variation.id, " stock: ", variation.stock)}
                             <div className="row-buttons">
                                 <div className="form-quantity">
                                     <button 
                                         type="button" 
                                         className="form-quantity-button-minus" 
-                                        onClick={() => prepend(index)}
-                                        disabled={stocks[index] <= 0}
+                                        onClick={() => {prepend(variation.id)}}
+                                        disabled={variation.stock <= 0}
                                     >
                                         <Icon icon={faMinus}/>
                                     </button>
@@ -687,28 +813,25 @@ function Product() {
                                         className="form-quantity-input" 
                                         type="number" 
                                         min="0"
-                                        value={stocks[index]} 
+                                        value={variation.stock} 
                                         onChange={(e) => {
-                                            const val = parseInt(e.target.value) || 0;
-                                            setStocks(prev => {
-                                                const newStocks = [...prev];
-                                                newStocks[index] = Math.max(0, val);
-                                                return newStocks;
-                                            });
+                                            if(selectedVariant){
+                                                setNewVariantStock(Math.max(0, parseInt(e.target.value) || 0));
+                                            }
                                         }}
                                     />
                     
                                     <button 
                                         type="button" 
                                         className="form-quantity-button-plus" 
-                                        onClick={() => append(index)}
+                                        onClick={() => {append(variation.id)}}
                                     >
                                         <Icon icon={faPlus}/>
                                     </button>
                                 </div>
                                 <button
                                     className="form-trash-button"
-                                    onClick={() => handleDelete(variation.Product_Variation?.id || variation.id)}
+                                    onClick={() => handleDeleteVariation(variation.id)}
                                 >
                                     <Icon icon={faTrashCan}/>    
                                 </button>
@@ -720,7 +843,7 @@ function Product() {
                 <section className="product-detail-buttons">
                     <p className="product-stock-label">Stock Disponible:</p>
                     
-                    {variations.length === 0 ? (
+                    {productState.variations.length == 0 || !productState.variations ?  (
                         <div className="form-quantity">
                             <button 
                                 type="button" 
@@ -749,15 +872,15 @@ function Product() {
                         </div>
                     ) : (
                         <div className="product-stock-total">
-                            {stocks.reduce((sum, stock) => sum + stock, 0)}
+                            {productState.stock_total = productState.variations?.reduce((sum, stock) => sum + stock.stock, 0)}
                         </div>
                     )}
                     
                     <button 
                         className="edit-button-detail"
-                        onClick={product ? handleUpdate : handleCreate}
+                        onClick={id ? handleUpdate : handleCreate}
                     >
-                        {product ? "GUARDAR CAMBIOS": "CREAR PRODUCTO"}
+                        {id ? "GUARDAR CAMBIOS": "CREAR PRODUCTO"}
                     </button>
                 </section>
             </div>  

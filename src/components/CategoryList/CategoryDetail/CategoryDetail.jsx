@@ -12,7 +12,7 @@ function CategoryDetail(category){
     const [availableCategories, setAvailableCategories] = useState([]);
     const [parent, setParent] = useState(null);
     const [categoryState, setCategoryState] = useState({
-        id: -1,
+        id: 0,
         desc: "",
         parent: -1,
         imagen: ""
@@ -268,7 +268,7 @@ function CategoryDetail(category){
                         }));
 
                         if(e.target.value == -1){    
-                            setSelectedParent({ id: -1 });
+                            setSelectedParent({ id: -1});
                             setParent(null);
                         }else{
                             const selectedCategory = availableCategories.find(cat =>

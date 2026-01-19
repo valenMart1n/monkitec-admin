@@ -8,10 +8,15 @@ function Home(){
     const handleClickCategories = () => {
         navigate("/categories");
     }
+    const handleClickVariations = () => {
+        navigate("/variations");
+    }
+
     return(
         <div className="home-background">
             <div className="home-option" onClick={handleClickProduct}>Productos</div>
             <div className="home-option" onClick={handleClickCategories}>Categorías</div>
+            <div className="home-option" onClick={handleClickVariations}>Variaciones</div>
         </div>
     );
 }

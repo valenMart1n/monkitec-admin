@@ -1,0 +1,84 @@
+.variations-list-background{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.variations-list-title{
+    width: 100%;
+    text-align: center;
+    font-family: 'Anton', Courier, monospace;
+    font-weight: 400;
+}
+.variations-table{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: #ebebee;
+    font-weight: bolder;
+    padding: 0;
+    list-style-type: none;
+    width: 100%;
+    max-width: 408px;
+}
+.variations-row{
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+    padding: 10px;
+    width: 100%;
+    background-color: rgba(6, 126, 255, 0.767);
+    cursor: pointer;
+}
+
+.variations-input{
+    background-color: rgba(54, 151, 255, 0.767);
+    color: white;
+    font-weight: bolder;
+    border: none;
+    width: 65%;
+}
+
+.delete-variation-button{
+    color: white;
+    border: none;
+    background-color: red;
+    border-radius: 5px;
+    padding: 5px;   
+}
+
+.delete-variation-icon{
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ease-in-out 120ms;
+}
+
+.variations-panel{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+.save-variations-button{
+    padding: 10px;
+    color: white;
+    font-weight: bolder;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(20, 43, 68);
+    cursor: pointer;
+    transition: all ease-in-out 120ms;
+}
+@media(min-width: 640px){
+    .variations-table{
+        max-width: 600px;
+    }
+}
+@media(min-width: 1024px){
+    .delete-variation-icon:hover{
+        transform: rotate(30deg)
+    }
+    .save-variations-button:hover{
+        background-color: rgb(56, 124, 197);
+    }
+}
