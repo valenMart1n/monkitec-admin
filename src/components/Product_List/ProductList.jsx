@@ -84,7 +84,7 @@ function ProductList(){
         const fetchData = async () => {
             setLoading(true);
             try{
-                const result = await fetch("http://localhost:3030/products", {
+                const result = await fetch("https://monkitec-api.vercel.app/products", {
                     method:"GET",
                     headers: { 
                         "Content-Type": "application/json",

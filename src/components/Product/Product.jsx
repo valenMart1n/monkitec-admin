@@ -58,7 +58,7 @@ function Product() {
     useEffect(() => {
         const fetchAvailableVariations = async () => {
             try{
-                const response = await fetch("http://localhost:3030/variations", {
+                const response = await fetch("https://monkitec-api.vercel.app/variations", {
                     method:"GET",
                     headers: { 
                         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ function Product() {
                     });
                     setAvailableVariations(available);
                 }
-                 const responseCategories = await fetch("http://localhost:3030/categories/listAll", {
+                 const responseCategories = await fetch("https://monkitec-api.vercel.app/categories/listAll", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -160,7 +160,7 @@ function Product() {
                 formData.append("imagen2", productState.imagen2File);
             }
 
-            const productResponse = await fetch("http://localhost:3030/products/create", {
+            const productResponse = await fetch("https://monkitec-api.vercel.app/products/create", {
                 method: "POST",
                 body: formData
             });
@@ -169,7 +169,7 @@ function Product() {
 
             const addVariations = productState.variations.map(variation => {
                 try{
-                    fetch("http://localhost:3030/product-variation/create", {
+                    fetch("https://monkitec-api.vercel.app/product-variation/create", {
                         method:"POST",
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -215,7 +215,7 @@ function Product() {
             }
             
             // Actualizar producto
-            const productResponse = await fetch("http://localhost:3030/products/update", {
+            const productResponse = await fetch("https://monkitec-api.vercel.app/update", {
                 method: "POST",
                 body: formData 
             });
@@ -231,7 +231,7 @@ function Product() {
             });            
             console.log("PREPARADOS PARA ACTUALIZAR: ", updatedVariations);
             const updatePromises = updatedVariations.map(update => 
-                fetch('http://localhost:3030/product-variation/update', {
+                fetch('https://monkitec-api.vercel.app/product-variation/update', {
                     method: 'POST',
                     headers: {  
                         'Content-Type': 'application/json'
@@ -262,7 +262,7 @@ function Product() {
             });
             const deleteVariations = deletedVariations.map(variation => {
                 try{
-                    fetch("http://localhost:3030/product-variation/delete", {
+                    fetch("https://monkitec-api.vercel.app/product-variation/delete", {
                         method: "POST",
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: variation.id})
@@ -285,7 +285,7 @@ function Product() {
 
             const addVariations = addedVariations.map(variation => {
                 try{
-                    fetch("http://localhost:3030/product-variation/create", {
+                    fetch("https://monkitec-api.vercel.app/product-variation/create", {
                         method:"POST",
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -463,7 +463,7 @@ function Product() {
     // Función para obtener producto desde API
     const fetchProductFromAPI = async (productId) => {
         try {
-            const response = await fetch("http://localhost:3030/products/byId", {
+            const response = await fetch("https://monkitec-api.vercel.app/products/byId", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

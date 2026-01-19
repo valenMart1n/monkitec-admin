@@ -45,7 +45,7 @@ function CategoryList(){
             setLoading(true);
             
             try{
-                const categoryRes = await fetch("http://localhost:3030/categories/listAll", {
+                const categoryRes = await fetch("https://monkitec-api.vercel.app/categories/listAll", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

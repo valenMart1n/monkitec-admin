@@ -33,7 +33,7 @@ const handleDeleteVariation = async(e, id) => {
     e.stopPropagation();
     try{
         
-        const variationResponse = await fetch("http://localhost:3030/variations/delete", {
+        const variationResponse = await fetch("https://monkitec-api.vercel.app/variations/delete", {
             method: "POST",
             headers: {
                     "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const handleSaveVariations = async() => {
     
         const saveResponse = editedVariations.map((variation) => {
             console.log("Variacion: ", variation.id, " desc: ", variation.descripcion)
-            fetch("http://localhost:3030/variations/update", {
+            fetch("https://monkitec-api.vercel.app/variations/update", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const handleSaveVariations = async() => {
         }
         if(newVariant != ""){
             console.log("Nueva Variante: ", newVariant);
-            fetch("http://localhost:3030/variations/create", {
+            fetch("https://monkitec-api.vercel.app/variations/create", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const handleSaveVariations = async() => {
         }
 
         alert("Variantes actualizadas")
-        navigate("http://localhost:3000/variations")
+        navigate("https://monkitec-api.vercel.app/variations")
     }catch(error){
         alert("Error guardando variantes: ", error);
     }
@@ -121,7 +121,7 @@ useEffect(() => {
     const fetchData = async() => {
         setLoading(true);
         try{    
-            const variationRes = await fetch("http://localhost:3030/variations", {
+            const variationRes = await fetch("https://monkitec-api.vercel.app/variations", {
                 method: "GET",
                 headers: {
                         "Content-Type": "application/json",

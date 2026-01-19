@@ -70,7 +70,7 @@ function CategoryDetail(category){
                 alert("Necesitas agregar una imagen");
                 return;
             }
-            const categoryResponse = await fetch("http://localhost:3030/categories/create", {
+            const categoryResponse = await fetch("https://monkitec-api.vercel.app/categories/create", {
                 method: "POST",
                 body: formData
             });
@@ -79,7 +79,7 @@ function CategoryDetail(category){
                 throw new Error(`Error al crear categoría: ${categoryResponse.status}`);
             }
 
-            navigate("http://localhost:3000/categories");
+            navigate("https://monkitec-api.vercel.app/categories");
             alert("Categoria creada correctamente");
         }catch(error){
             alert("Error en la base de datos: ", error);
@@ -95,7 +95,7 @@ function CategoryDetail(category){
             if(categoryState.imagenFile){
                 formData.append("imagen", categoryState.imagenFile);
             }
-            const categoryResponse = await fetch("http://localhost:3030/categories/update", {
+            const categoryResponse = await fetch("https://monkitec-api.vercel.app/categories/update", {
                 method: "POST",
                 body: formData 
             });
@@ -104,7 +104,7 @@ function CategoryDetail(category){
                 throw new Error(`Error al editar categoría: ${categoryResponse.status}`);
             }
 
-            navigate("http://localhost:3000/categories");
+            navigate("https://monkitec-api.vercel.app/categories");
             alert("Categoria actualizada correctamente");
         }catch(error){
             alert("Error en la base de datos: ", error);
@@ -112,7 +112,7 @@ function CategoryDetail(category){
     }
     const fetchCategoryFromAPI = async (categoryId) => {
         try{
-            const response = await fetch("http://localhost:3030/categories/byId", {
+            const response = await fetch("https://monkitec-api.vercel.app/categories/byId", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -192,7 +192,7 @@ function CategoryDetail(category){
         const fetchAvailableCategories = async() => {
 
             try{
-                const response = await fetch("http://localhost:3030/categories/listAll", {
+                const response = await fetch("https://monkitec-api.vercel.app/categories/listAll", {
                     method: "GET",
                     headers: { 
                         "Content-Type": "application/json",

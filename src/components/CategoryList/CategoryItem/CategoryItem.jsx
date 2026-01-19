@@ -8,7 +8,7 @@ function CategoryItem({ id, name, imageUrl, hasImage, onClick, onDelete }) {
         console.log(id);
         if(id != undefined){
         try{
-            await fetch("http://localhost:3030/categories/delete", {
+            await fetch("https://monkitec-api.vercel.app/categories/delete", {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: id })
