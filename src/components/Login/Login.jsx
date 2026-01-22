@@ -1,5 +1,5 @@
 import "./Login.css"
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import logo from "../../img/icono.jpg";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,15 @@ function Login(){
         username: "",
         password: ""
     });
+
+    useEffect(() => {
+        const user = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
+        
+        if (user && token) {
+            navigate(`${process.env.REACT_APP_ADMIN_URL}/home`, { replace: true });
+        }
+    }, [navigate]);
 
     const handleUsernameChange = (e) => {
         setUserState(prev => ({
@@ -73,16 +82,12 @@ function Login(){
 
     return(
     <div className="login-background">
-        {!localStorage.getItem("user") ? (
         <div className="login-data-background">
            <img className="login-icon" src={logo}/>
             <input className="login-input" placeholder="Usuario" value={userState.username} onChange={handleUsernameChange}/>
             <input className="login-input" type="password" placeholder="Contraseña" value={userState.password} onChange={handlePasswordChange}/>
             <button onClick={handleLogin} className="login-button">Iniciar Sesión</button>
         </div>
-        ):(
-            navigate(`${process.env.REACT_APP_ADMIN_URL}/home`)
-        )}
     </div> 
     )   
 }
