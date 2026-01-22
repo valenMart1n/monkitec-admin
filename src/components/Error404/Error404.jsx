@@ -11,7 +11,7 @@ function Error404(){
         <p className="label-error">La página que estabas buscando no existe</p>
         <img src={errorImg} className="error-image"/>
         <div className="home-button-container">
-            <button className="home-button" onClick={() => {navigate("/")}}>Volver al inicio</button>
+            <button className="home-button" onClick={() => {navigate(`${process.env.REACT_APP_ADMIN_URL}/`)}}>Volver al inicio</button>
         </div>
         </div>
     )

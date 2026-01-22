@@ -1,9 +1,9 @@
 .category-detail-background{ /*category-listed-background*/
-    
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     width: 100%;
+    padding-top: 3.45em;
 }
 
 .category-detail-image-container{

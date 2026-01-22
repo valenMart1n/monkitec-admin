@@ -35,12 +35,12 @@ function ListedProduct({ product, onClick, onDelete }) {
     const handleDelete = async(e) => {
         e.stopPropagation();
         try{
-        await fetch("https://monkitec-api.vercel.app/products/delete", {
+        await fetch(`${process.env.REACT_APP_API_URL}/products/delete`, {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: product.id })
         });
-        await fetch("https://monkitec-api.vercel.app/product-variation/deleteByProduct", {
+        await fetch(`${process.env.REACT_APP_API_URL}/product-variation/deleteByProduct`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: product.id })

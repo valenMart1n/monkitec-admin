@@ -2,6 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+    padding-top: 3.45em;
 }
 .previus-image{
     position: absolute;
@@ -74,12 +75,12 @@
 
 .form-quantity{
     display: flex;
-    width: 50%;
+    width: 45%;
     border: solid;
     border-width: 2px;
     border-color: #9e9e9e;
     border-radius: 5px;
-    margin-right: 10px;
+    height: 1.5em;
    
 }
 
@@ -93,7 +94,7 @@
 .form-quantity-button-plus, .form-quantity-button-minus, .form-new-quantity-button-minus, .form-new-quantity-button-plus{
     border:none;
     width: 30%;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .form-quantity-button-minus{
@@ -111,7 +112,8 @@
 }
 .form-new-quantity{
     margin-top: 15px;
-    width: 40%;
+    width: 35%;
+    height: 1.5em;
     display: flex;
     border: solid;
     border-width: 2px;
@@ -126,7 +128,9 @@
     cursor: pointer;
     font-weight: bolder;
     border-radius: 5px;
-    padding: 5px;
+    width: 30%;
+    max-width: 120px;
+    height: 2.3em;
     background-color: rgb(35, 145, 68);
     color: white;
 
@@ -165,21 +169,14 @@
     transition: all ease-in-out 200ms;
 }
 
-
-
-.options-section{
-    width: 65%;
-    display: flex;
-    align-items: center;
-}
-
 .product-detail-select{
+    width: 55%;
+    min-width: 200px;
     margin-top: 15px;
-    width: 60%;
-    height: 2em;
+    height: 2.3em;
     font-size: 15px;
     border: solid;
-    border-radius: 10px;
+    border-radius: 5px;
     border-width: 3px;
     border-color: rgb(32, 68, 105);
     font-family: 'Roboto', Courier, monospace;
@@ -231,6 +228,9 @@ display: block;
 .options-section{
     display: flex;
     flex-wrap: wrap;
+    width: 80%;
+}
+.select-background{
     width: 100%;
 }
 .row-buttons{
@@ -245,10 +245,15 @@ display: block;
     padding: 7px;
     border-radius: 5px;
     border: none;
+    margin-left: 15px;
     background-color: rgb(179, 0, 0);
     color: white;
 }
 @media (min-width: 640px) {
+    .product-detail-select{
+        min-width: 270px;
+    }
+
     .next-image, .previus-image{
         max-width: 20px;
        
@@ -317,6 +322,7 @@ display: block;
 }
  
 @media (min-width: 1024px) {
+    
     .add-variation-button{
         font-size: 15px;
     }
@@ -349,7 +355,8 @@ display: block;
         padding-left: 20px;
     }
     .form-new-quantity{
-        height: 1.5em;
+        max-width: 150px;
+        height:1.7em;
     }
     .form-quantity{
         height: 1.5em;
@@ -361,8 +368,8 @@ display: block;
     }
     
     .product-detail-title{
-        padding-top: 2em;
-        font-size: 35px;
+        margin-top: 20px;
+        font-size: 30px;
     }
     
     .edit-button-detail{

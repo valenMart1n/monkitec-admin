@@ -1,0 +1,86 @@
+.user-background{
+    font-family: 'Lato', Courier, monospace;
+    padding-top: 3.5em;
+    font-size: 18px;
+}
+
+.user-data-container{
+    padding-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: center;
+}
+
+.user-data-input{
+    border: solid;
+    border-radius: 5px;
+    border-width: 2px;
+    border-color: #d3d3d4c0;
+    background-color: #ebebeb;
+    width: 50%;
+    font-size: 15px;
+    padding: 5px;
+    max-width: 210px;
+}
+
+.user-data-title{
+    
+    margin-right: 10px;
+    color: rgb(20, 43, 68);
+    font-weight: bolder;
+}
+
+.user-data-buttons-container{
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.user-data-button{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    margin: 20px;
+    padding: 8px;
+    height: 2em;
+    font-size: 23px;
+    border: none;
+    transition: all ease-in-out 200ms;
+}
+
+.button-title{
+    display: none;
+    margin-right:5px;
+}
+
+.close-session-button{
+    cursor: pointer;
+    font-family: 'Roboto', Courier, monospace;
+    font-weight: bolder;
+    background-color: rgb(212, 5, 5);
+    color: white;
+    border: none;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 5px;
+    transition: all ease-in-out 150ms;
+}
+
+@media(min-width: 640px){
+    .button-title{
+        display: block;
+        font-size: 18px;
+    }
+    .user-data-container{
+        padding-left: 0;
+        justify-content: center;
+    }
+}
+@media(min-width: 1024px){
+    .close-session-button:hover{
+        background-color: rgb(145, 5, 5);
+    }
+}

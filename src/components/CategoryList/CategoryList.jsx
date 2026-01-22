@@ -12,7 +12,7 @@ function CategoryList(){
     const [categoriesArray, setCategoriesArray] = useState([]);
 
     const handleCategoryClick = (category) => {
-        navigate(`/category/${category.id}`, {
+        navigate(`${process.env.REACT_APP_ADMIN_URL}/category/${category.id}`, {
             state: {category}
         });
     };
@@ -45,7 +45,7 @@ function CategoryList(){
             setLoading(true);
             
             try{
-                const categoryRes = await fetch("https://monkitec-api.vercel.app/categories/listAll", {
+                const categoryRes = await fetch(`${process.env.REACT_APP_API_URL}/categories/listAll`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ function CategoryList(){
                         />
                     </div>
                 ))}
-            <button className="add-product-button" onClick={()=>{navigate("/categories/create")}}><Icon icon={faPlus}/></button>
+            <button className="add-product-button" onClick={()=>{navigate(`${process.env.REACT_APP_ADMIN_URL}/categories/create`)}}><Icon icon={faPlus}/></button>
         </div>
     );
 }

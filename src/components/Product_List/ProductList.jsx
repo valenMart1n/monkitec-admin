@@ -58,7 +58,7 @@ function ProductList(){
     
     const getProductDetail = (product) => {
        
-        navigate(`/product/${product.id}`, {
+        navigate(`${process.env.REACT_APP_ADMIN_URL}/product/${product.id}`, {
             state: {  product: {
                 id: product.id,
                 desc: product.desc,
@@ -84,7 +84,7 @@ function ProductList(){
         const fetchData = async () => {
             setLoading(true);
             try{
-                const result = await fetch("https://monkitec-api.vercel.app/products", {
+                const result = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
                     method:"GET",
                     headers: { 
                         "Content-Type": "application/json",
@@ -156,7 +156,7 @@ function ProductList(){
                    <p>No se encontraron productos</p>
                </div>
            )}
-           <button className="add-product-button" onClick={()=>{navigate("/products/create")}}><Icon icon={faPlus}/></button>
+           <button className="add-product-button" onClick={()=>{navigate(`${process.env.REACT_APP_ADMIN_URL}/products/create`)}}><Icon icon={faPlus}/></button>
         </div>
         
     );

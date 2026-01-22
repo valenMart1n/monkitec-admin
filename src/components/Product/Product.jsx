@@ -58,7 +58,7 @@ function Product() {
     useEffect(() => {
         const fetchAvailableVariations = async () => {
             try{
-                const response = await fetch("https://monkitec-api.vercel.app/variations", {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/variations`, {
                     method:"GET",
                     headers: { 
                         "Content-Type": "application/json",
@@ -88,7 +88,7 @@ function Product() {
                     });
                     setAvailableVariations(available);
                 }
-                 const responseCategories = await fetch("https://monkitec-api.vercel.app/categories/listAll", {
+                 const responseCategories = await fetch(`${process.env.REACT_APP_API_URL}/categories/listAll`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -160,7 +160,7 @@ function Product() {
                 formData.append("imagen2", productState.imagen2File);
             }
 
-            const productResponse = await fetch("https://monkitec-api.vercel.app/products/create", {
+            const productResponse = await fetch(`${process.env.REACT_APP_API_URL}/products/create`, {
                 method: "POST",
                 body: formData
             });
@@ -169,7 +169,7 @@ function Product() {
 
             const addVariations = productState.variations.map(variation => {
                 try{
-                    fetch("https://monkitec-api.vercel.app/product-variation/create", {
+                    fetch(`${process.env.REACT_APP_API_URL}/product-variation/create`, {
                         method:"POST",
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -190,7 +190,7 @@ function Product() {
             });
 
             await Promise.all(addVariations);
-            navigate("/products");
+            navigate(`${process.env.REACT_APP_ADMIN_URL}/products`);
             alert("Producto creado con exito");
         }catch(error){
             alert("Error en base de datos: ", error);
@@ -215,7 +215,7 @@ function Product() {
             }
             
             // Actualizar producto
-            const productResponse = await fetch("https://monkitec-api.vercel.app/update", {
+            const productResponse = await fetch(`${process.env.REACT_APP_API_URL}/products/update`, {
                 method: "POST",
                 body: formData 
             });
@@ -231,7 +231,7 @@ function Product() {
             });            
             console.log("PREPARADOS PARA ACTUALIZAR: ", updatedVariations);
             const updatePromises = updatedVariations.map(update => 
-                fetch('https://monkitec-api.vercel.app/product-variation/update', {
+                fetch(`${process.env.REACT_APP_API_URL}/product-variation/update`, {
                     method: 'POST',
                     headers: {  
                         'Content-Type': 'application/json'
@@ -262,7 +262,7 @@ function Product() {
             });
             const deleteVariations = deletedVariations.map(variation => {
                 try{
-                    fetch("https://monkitec-api.vercel.app/product-variation/delete", {
+                    fetch(`${process.env.REACT_APP_API_URL}/product-variation/delete`, {
                         method: "POST",
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: variation.id})
@@ -285,7 +285,7 @@ function Product() {
 
             const addVariations = addedVariations.map(variation => {
                 try{
-                    fetch("https://monkitec-api.vercel.app/product-variation/create", {
+                    fetch(`${process.env.REACT_APP_API_URL}/product-variation/create`, {
                         method:"POST",
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
@@ -309,7 +309,7 @@ function Product() {
             await Promise.all(deleteVariations);
             await Promise.all(addVariations);
             setNewVariantStock(0);
-            navigate("/products");
+            navigate(`${process.env.REACT_APP_ADMIN_URL}/products`);
             alert("Producto Actualizado correctamente");
 
         }catch(error){
@@ -463,7 +463,7 @@ function Product() {
     // Función para obtener producto desde API
     const fetchProductFromAPI = async (productId) => {
         try {
-            const response = await fetch("https://monkitec-api.vercel.app/products/byId", {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/products/byId`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -730,6 +730,7 @@ function Product() {
                     ) : (
                         <p className="product-variation-title">Agregar variación:</p>
                     )}
+                    <div className="select-background">
                     <select className="product-detail-select" onChange={(e) => {
                         console.log("Seleccionado: " + e.target.selectedIndex);
                         if(e.target.value === ""){
@@ -758,6 +759,7 @@ function Product() {
                             );
                         })}
                     </select>
+                    </div>
                     <div className="form-new-quantity">
                         <button 
                             type="button" 

@@ -1,10 +1,13 @@
 .header-background{
     display: flex;
     flex-wrap: nowrap;
+    justify-content: center;
     align-items: center;
     background-color: rgb(20, 43, 68);
     height: 55px;
     width: 100%;
+    position: fixed;
+    z-index: 3;
 }
 
 .image-logo{
@@ -14,11 +17,11 @@
      cursor: pointer;
 }
 .title-background{
-    width: 100%;
+    width: 80%;
     display: flex;
-    justify-content: center;
     align-items: center;
-   
+    justify-content: center;
+
 }
 .title{
     font-family: 'Rubik Dirt', Courier, monospace;
@@ -26,12 +29,15 @@
     font-size: 20px;
      cursor: pointer;
 }
-.shopping-cart-container{
-color: white;
-    margin-right: 1.5em;
-    font-size: 20px;
+.user-icon-container{
+    width: 15%;
+    width: 45px;
     cursor: pointer;
 }
+.user-icon{
+    color: white;
+}
+
 @media (min-width: 640px) {
     .title{
         font-size: 25px;

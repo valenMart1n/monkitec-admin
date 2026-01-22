@@ -5,11 +5,11 @@
     display: flex;
     flex-wrap: wrap;
     margin-top: 15px;
-    width: 45%;
+    width: 70%;
     background-color: white;
-    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.699);
     transition: all ease-in-out 200ms;
-
+    
 }
 .listed-product-image-container {
   position: relative;
@@ -54,12 +54,15 @@
     font-family: 'Lato', Courier, monospace;
     font-size: 16px;
     padding-left: 15px;
-    width: 100%;
-    height: 30%;
-    margin-bottom: 5px;
+    width: 95%;
+    border-top: solid;
+    border-top-color: rgb(0, 0, 0);
+    border-top-width: 1px;
 }
 .product-name{
-    height: 10px;
+    width: 100%;
+    white-space: normal; 
+    word-wrap: break-word; 
 }
 .label-price{
     font-size: 18px;
@@ -128,7 +131,7 @@
   .listed-product-background{
         max-width: 276px;
         max-height: 417px;
-         
+        
     }
 }
 @media (min-width: 1024px) {
